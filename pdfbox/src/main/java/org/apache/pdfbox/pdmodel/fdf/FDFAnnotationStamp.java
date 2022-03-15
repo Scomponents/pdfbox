@@ -132,6 +132,16 @@ public class FDFAnnotationStamp extends FDFAnnotation
             LOG.debug("Generate and set the appearance dictionary to the stamp annotation");
             annot.setItem(COSName.AP, parseStampAnnotationAppearanceXML(appearanceEl));
         }
+
+        String rotation = element.getAttribute("rotation");
+        if (rotation != null && !rotation.isEmpty())
+        {
+            setRotation(Integer.parseInt(rotation));
+        }
+    }
+
+    public void setRotation(int angle) {
+        annot.setInt(COSName.ROTATE, angle);
     }
 
     /**
