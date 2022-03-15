@@ -84,7 +84,8 @@ abstract class TrueTypeEmbedder implements Subsetter
 
         if (!isEmbeddingPermitted(ttf))
         {
-            throw new IOException("This font does not permit embedding");
+            // UTE-2631
+            //throw new IOException("This font does not permit embedding");
         }
 
         if (!embedSubset)

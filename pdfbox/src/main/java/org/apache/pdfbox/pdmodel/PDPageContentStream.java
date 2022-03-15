@@ -32,6 +32,8 @@ import org.apache.pdfbox.contentstream.operator.OperatorName;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
 import org.apache.pdfbox.cos.COSDictionary;
+import org.apache.pdfbox.cos.COSFloat;
+import org.apache.pdfbox.cos.COSInteger;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSNumber;
 import org.apache.pdfbox.pdfwriter.COSWriter;
@@ -2326,6 +2328,25 @@ public final class PDPageContentStream implements Closeable
      *
      * @param tag the tag
      * @param propertyList property list
+     * @param useResources flag that indicates should property list been written to resources dictionary
+     *                     or directly
+     * @throws IOException If the content stream could not be written
+     */
+    public void beginMarkedContent(COSName tag, PDPropertyList propertyList, boolean useResources) throws IOException
+    {
+        if (useResources) {
+            beginMarkedContent(tag, propertyList);
+        } else {
+            beginMarkedContent(tag, propertyList.getCOSObject());
+        }
+    }
+
+    /**
+     * Begin a marked content sequence with a reference to an entry in the page resources'
+     * Properties dictionary.
+     *
+     * @param tag the tag
+     * @param propertyList property list
      * @throws IOException If the content stream could not be written
      */
     public void beginMarkedContent(COSName tag, PDPropertyList propertyList) throws IOException
@@ -2336,20 +2357,26 @@ public final class PDPageContentStream implements Closeable
     }
 
     /**
-     * Begin a marked content sequence with an artifact.
+     * Begin a marked content sequence with a reference to an entry in the page resources'
+     * Properties dictionary.
      *
-     * @param propertyList property list
+     * @param tag the tag
+     * @param properties property list
      * @throws IOException If the content stream could not be written
      */
-    public void beginMarkedContentUsingArtifact(PDPropertyList propertyList) throws IOException
+    public void beginMarkedContent(COSName tag, COSDictionary properties) throws IOException
     {
-        writeOperand(COSName.ARTIFACT);
+        writeOperand(tag);
         write("<<");
-        COSDictionary properties = propertyList.getCOSObject();
         for (Map.Entry<COSName, COSBase> entry : properties.entrySet()) {
-            if (entry.getValue() instanceof COSName) {
-                writeOperand(entry.getKey());
-                writeOperand((COSName) entry.getValue());
+            writeOperand(entry.getKey());
+            final COSBase value = entry.getValue();
+            if (value instanceof COSName) {
+                writeOperand((COSName) value);
+            } else if (value instanceof COSInteger) {
+                writeOperand(((COSInteger) value).intValue());
+            } else if (value instanceof COSFloat) {
+                writeOperand(((COSFloat) value).floatValue());
             }
         }
         write(">>");

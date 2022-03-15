@@ -83,7 +83,7 @@
             </executions>
             <configuration>
                 <serverId>itc-snapshots</serverId>
-                <nexusUrl>https://nexus.intechcore.online/repository/maven-itc-snapshots</nexusUrl>
+                <nexusUrl>https://nexus.intechcore.online/repository/maven-scomponents-snapshots/</nexusUrl>
                 <skipStaging>true</skipStaging>
             </configuration>
         </plugin>

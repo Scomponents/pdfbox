@@ -46,12 +46,12 @@
 
     <distributionManagement>
         <repository>
-            <id>itc-releases</id>
-            <url>https://nexus.intechcore.online/repository/maven-itc-releases</url>
+            <id>scomponents-releases</id>
+            <url>https://nexus.intechcore.online/repository/maven-scomponents-releases/</url>
         </repository>
         <snapshotRepository>
-            <id>itc-snapshots</id>
-            <url>https://nexus.intechcore.online/repository/maven-itc-snapshots</url>
+            <id>scomponents-snapshots</id>
+            <url>https://nexus.intechcore.online/repository/maven-scomponents-snapshots/</url>
         </snapshotRepository>
         <site>
             <id>${project.artifactId}-site</id>

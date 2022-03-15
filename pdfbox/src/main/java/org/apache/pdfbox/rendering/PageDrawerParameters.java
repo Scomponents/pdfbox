@@ -40,7 +40,7 @@ public final class PageDrawerParameters
     /**
      * Package-private constructor.
      */
-    PageDrawerParameters(PDFRenderer renderer, PDPage page, boolean subsamplingAllowed,
+    public PageDrawerParameters(PDFRenderer renderer, PDPage page, boolean subsamplingAllowed,
                          RenderDestination destination, RenderingHints renderingHints,
                          float imageDownscalingOptimizationThreshold)
     {

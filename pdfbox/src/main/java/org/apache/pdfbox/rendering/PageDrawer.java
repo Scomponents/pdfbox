@@ -130,7 +130,7 @@ public class PageDrawer extends PDFGraphicsStreamEngine
     private final boolean subsamplingAllowed;
     
     // the graphics device to draw to, xform is the initial transform of the device (i.e. DPI)
-    private Graphics2D graphics;
+    protected Graphics2D graphics;
     private AffineTransform xform;
     private float xformScalingFactorX;
     private float xformScalingFactorY;
@@ -1079,10 +1079,17 @@ public class PageDrawer extends PDFGraphicsStreamEngine
         }
         linePath.reset();
     }
-    
+
+    //UTE-2630: drawing a stencil image with pdfbox
+    private BufferedImage tempImage;
+    public BufferedImage getTempImage() {
+        return tempImage;
+    }
+
     @Override
     public void drawImage(PDImage pdImage) throws IOException
     {
+        tempImage = null;
         if (pdImage instanceof PDImageXObject &&
             isHiddenOCG(((PDImageXObject) pdImage).getOptionalContent()))
         {
@@ -1194,7 +1201,7 @@ public class PageDrawer extends PDFGraphicsStreamEngine
                         }
                     }
                 }
-
+                tempImage = renderedPaint;
                 // draw the image
                 graphics.drawImage(renderedPaint,
                         AffineTransform.getTranslateInstance(bounds.getMinX(), bounds.getMinY()),
@@ -1204,7 +1211,7 @@ public class PageDrawer extends PDFGraphicsStreamEngine
             {
                 // fill the image with stenciled paint
                 BufferedImage image = pdImage.getStencilImage(getNonStrokingPaint());
-
+                tempImage = image;
                 // draw the image
                 drawBufferedImage(image, at);
             }
