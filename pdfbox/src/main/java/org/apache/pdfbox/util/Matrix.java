@@ -255,6 +255,15 @@ public final class Matrix implements Cloneable
     }
 
     /**
+     * Returns a single dimension array of 6 values in the matrix [a, b, c, d, e, f].
+     *
+     * @return The values of this matrix.
+     */
+    public double[] getValuesShort() {
+        return new double[]{single[0], single[1], single[3], single[4], single[6], single[7]};
+    }
+
+    /**
      * Return a single dimension array of all values in the matrix.
      *
      * @return The values ot this matrix.
