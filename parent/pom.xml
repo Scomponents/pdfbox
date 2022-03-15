@@ -33,7 +33,7 @@
 
     <groupId>org.apache.pdfbox</groupId>
     <artifactId>pdfbox-parent</artifactId>
-    <version>2.0.26-SNAPSHOT</version>
+    <version>2.0.26-sunitext</version>
     <packaging>pom</packaging>
 
     <name>PDFBox parent</name>
@@ -43,6 +43,21 @@
         <name>The Apache Software Foundation</name>
         <url>http://pdfbox.apache.org</url>
     </organization>
+
+    <distributionManagement>
+        <repository>
+            <id>itc-releases</id>
+            <url>https://nexus.intechcore.online/repository/maven-itc-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>itc-snapshots</id>
+            <url>https://nexus.intechcore.online/repository/maven-itc-snapshots</url>
+        </snapshotRepository>
+        <site>
+            <id>${project.artifactId}-site</id>
+            <url>file:/${basedir}</url>
+        </site>
+    </distributionManagement>
 
     <issueManagement>
         <system>jira</system>
@@ -534,9 +549,9 @@
         </developer>
     </developers>
 
-  <scm>
+  <!--<scm>
     <connection>scm:svn:http://svn.apache.org/repos/asf/maven/pom/branches/2.0/pdfbox-parent</connection>
     <developerConnection>scm:svn:https://svn.apache.org/repos/asf/maven/pom/branches/2.0/pdfbox-parent</developerConnection>
     <url>http://svn.apache.org/viewvc/maven/pom/branches/2.0/pdfbox-parent</url>
-  </scm>
+  </scm>-->
 </project>

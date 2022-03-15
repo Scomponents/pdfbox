@@ -23,7 +23,7 @@
   <parent>
     <groupId>org.apache.pdfbox</groupId>
     <artifactId>pdfbox-parent</artifactId>
-    <version>2.0.26-SNAPSHOT</version>
+    <version>2.0.26-sunitext</version>
     <relativePath>parent/pom.xml</relativePath>
   </parent>
 
@@ -33,13 +33,9 @@
   <name>PDFBox reactor</name>
 
   <scm>
-    <connection>
-      scm:svn:http://svn.apache.org/repos/asf/pdfbox/branches/2.0
-    </connection>
-    <developerConnection>
-      scm:svn:https://svn.apache.org/repos/asf/pdfbox/branches/2.0
-    </developerConnection>
-    <url>http://svn.apache.org/viewvc/pdfbox/branches/2.0</url>
+      <connection>scm:git:https://bitbucket.intechcore.online/scm/sunitext/sunitext-pdfbox.git</connection>
+      <url>https://bitbucket.intechcore.online/scm/sunitext/sunitext-pdfbox.git</url>
+      <developerConnection>scm:git:https://bitbucket.intechcore.online/scm/sunitext/sunitext-pdfbox.git</developerConnection>
   </scm>
 
   <modules>
@@ -58,12 +54,39 @@
 
   <build>
     <plugins>
-      <plugin>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <version>2.8.2</version>
+            <executions>
+                <execution>
+                    <id>default-deploy</id>
+                    <phase>deploy</phase>
+                    <goals>
+                        <goal>deploy</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>1.5.1</version>
+            <executions>
+                <execution>
+                    <id>default-deploy</id>
+                    <phase>deploy</phase>
+                    <goals>
+                        <goal>deploy</goal>
+                    </goals>
+                </execution>
+            </executions>
+            <configuration>
+                <serverId>itc-snapshots</serverId>
+                <nexusUrl>https://nexus.intechcore.online/repository/maven-itc-snapshots</nexusUrl>
+                <skipStaging>true</skipStaging>
+            </configuration>
+        </plugin>
     </plugins>
   </build>
 
