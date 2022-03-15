@@ -479,6 +479,33 @@ public final class PDPageContentStream implements Closeable
     }
 
     /**
+     * Shows the given glyphs at the location specified by the current text matrix.
+     *
+     * @param codeArr array of glyphs code.
+     * @throws IOException If an io exception occurs.
+     * @throws IllegalArgumentException if a character isn't supported by the current font
+     */
+    public void showText(int[] codeArr) throws IOException
+    {
+        if (!inTextMode)
+        {
+            throw new IllegalStateException("Must call beginText() before showText()");
+        }
+
+        if (fontStack.isEmpty())
+        {
+            throw new IllegalStateException("Must call setFont() before showText()");
+        }
+        StringBuilder codes = new StringBuilder();
+        for (int code : codeArr) {
+            codes.append(getGlyphCodeToWrite(code));
+        }
+        write("<" + codes.toString() + ">");
+        write(" ");
+        writeOperator(OperatorName.SHOW_TEXT);
+    }
+
+    /**
      * Outputs a string using the correct encoding and subsetting as required.
      *
      * @param text The Unicode text to show.
@@ -2582,6 +2609,19 @@ public final class PDPageContentStream implements Closeable
         {
             nonStrokingColorSpaceStack.setElementAt(colorSpace, nonStrokingColorSpaceStack.size() - 1);
         }
+    }
+
+    private String getGlyphCodeToWrite(int v) {
+        String hex = Integer.toHexString(v);
+        String prefix = "";
+        if (hex.length() == 1) {
+            prefix = "000";
+        } else if (hex.length() == 2) {
+            prefix = "00";
+        } else if (hex.length() == 3) {
+            prefix = "0";
+        }
+        return prefix + hex;
     }
 
     /**
