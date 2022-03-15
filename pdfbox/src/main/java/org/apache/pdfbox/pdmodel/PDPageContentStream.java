@@ -24,12 +24,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Stack;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.pdfbox.contentstream.operator.OperatorName;
 import org.apache.pdfbox.cos.COSArray;
 import org.apache.pdfbox.cos.COSBase;
+import org.apache.pdfbox.cos.COSDictionary;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.cos.COSNumber;
 import org.apache.pdfbox.pdfwriter.COSWriter;
@@ -2330,6 +2332,27 @@ public final class PDPageContentStream implements Closeable
     {
         writeOperand(tag);
         writeOperand(resources.add(propertyList));
+        writeOperator(OperatorName.BEGIN_MARKED_CONTENT_SEQ);
+    }
+
+    /**
+     * Begin a marked content sequence with an artifact.
+     *
+     * @param propertyList property list
+     * @throws IOException If the content stream could not be written
+     */
+    public void beginMarkedContentUsingArtifact(PDPropertyList propertyList) throws IOException
+    {
+        writeOperand(COSName.ARTIFACT);
+        write("<<");
+        COSDictionary properties = propertyList.getCOSObject();
+        for (Map.Entry<COSName, COSBase> entry : properties.entrySet()) {
+            if (entry.getValue() instanceof COSName) {
+                writeOperand(entry.getKey());
+                writeOperand((COSName) entry.getValue());
+            }
+        }
+        write(">>");
         writeOperator(OperatorName.BEGIN_MARKED_CONTENT_SEQ);
     }
 

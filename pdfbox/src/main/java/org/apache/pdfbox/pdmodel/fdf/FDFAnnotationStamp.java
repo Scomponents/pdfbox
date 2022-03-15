@@ -205,6 +205,9 @@ public class FDFAnnotationStamp extends FDFAnnotation
                 {
                     if (!"Length".equals(childAttrKey))
                     {
+                        if (childAttrVal.contains(".")) {
+                            childAttrVal = childAttrVal.substring(0, childAttrVal.indexOf(".")); //avoid NumberFormatException
+                        }
                         stream.setInt(COSName.getPDFName(childAttrKey), Integer.parseInt(childAttrVal));
                         LOG.debug(parentAttrKey + " => Set " + childAttrKey + ": " + childAttrVal);
                     }
