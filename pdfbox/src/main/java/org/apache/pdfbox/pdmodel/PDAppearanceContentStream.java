@@ -19,12 +19,16 @@ package org.apache.pdfbox.pdmodel;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import org.apache.pdfbox.contentstream.operator.OperatorName;
 import org.apache.pdfbox.cos.COSArray;
 
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
+import org.apache.pdfbox.pdmodel.graphics.form.PDFormXObject;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAppearanceStream;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDBorderStyleDictionary;
 
@@ -35,6 +39,13 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDBorderStyleDictionary;
  */
 public final class PDAppearanceContentStream extends PDAbstractContentStream implements Closeable
 {
+    private static final String SAVE_GRAPHICS_STATE = "q\n";
+    private static final String RESTORE_GRAPHICS_STATE = "Q\n";
+    private static final String CONCATENATE_MATRIX = "cm\n";
+    private static final String XOBJECT_DO = "Do\n";
+    private static final String SPACE = " ";
+    private static final NumberFormat FORMATDECIMAL = NumberFormat.getNumberInstance(Locale.US);
+
     /**
      * Create a new appearance stream.
      *
@@ -283,5 +294,36 @@ public final class PDAppearanceContentStream extends PDAbstractContentStream imp
         {
             writeOperator(OperatorName.ENDPATH);
         }
+    }
+
+    public void drawXObject(PDImageXObject xobject, PDFormXObject form,
+                             float x, float y, float width, float height) throws IOException {
+        OutputStream os = form.getStream().createOutputStream();
+        appendRawCommands(os, SAVE_GRAPHICS_STATE);
+        appendRawCommands(os, FORMATDECIMAL.format(width));
+        appendRawCommands(os, SPACE);
+        appendRawCommands(os, FORMATDECIMAL.format(0));
+        appendRawCommands(os, SPACE);
+        appendRawCommands(os, FORMATDECIMAL.format(0));
+        appendRawCommands(os, SPACE);
+        appendRawCommands(os, FORMATDECIMAL.format(height));
+        appendRawCommands(os, SPACE);
+        appendRawCommands(os, FORMATDECIMAL.format(x));
+        appendRawCommands(os, SPACE);
+        appendRawCommands(os, FORMATDECIMAL.format(y));
+        appendRawCommands(os, SPACE);
+        appendRawCommands(os, CONCATENATE_MATRIX);
+        appendRawCommands(os, SPACE);
+        appendRawCommands(os, "/");
+        appendRawCommands(os, form.getResources().add(xobject).getName());
+        appendRawCommands(os, SPACE);
+        appendRawCommands(os, XOBJECT_DO);
+        appendRawCommands(os, SPACE);
+        appendRawCommands(os, RESTORE_GRAPHICS_STATE);
+        os.close();
+    }
+
+    private void appendRawCommands(OutputStream os, String commands) throws IOException {
+        os.write(commands.getBytes("ISO-8859-1"));
     }
 }
